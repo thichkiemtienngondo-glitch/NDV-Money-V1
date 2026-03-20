@@ -693,6 +693,7 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                               >
                                                 {copiedId === u.id + loan.id ? <Check size={9} /> : <Copy size={9} />}
                                               </button>
+
                                             </div>
                                           </div>
                                         </div>
