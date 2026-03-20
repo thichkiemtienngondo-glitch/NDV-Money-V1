@@ -272,7 +272,8 @@ const App: React.FC = () => {
         if (user && data.users) {
           const freshUser = data.users.find((u: User) => u.id === user.id);
           if (freshUser) {
-            setUser(prev => (prev?.isAdmin && !freshUser.isAdmin) ? { ...freshUser, isAdmin: true } : freshUser);
+            setUser(freshUser);
+            localStorage.setItem('vnv_user', JSON.stringify(freshUser));
           }
         }
       } catch (e: any) {
@@ -305,7 +306,8 @@ const App: React.FC = () => {
         return next;
       });
       if (user && user.id === updatedUser.id) {
-        setUser(prev => (prev?.isAdmin && !updatedUser.isAdmin) ? { ...updatedUser, isAdmin: true } : updatedUser);
+        setUser(updatedUser);
+        localStorage.setItem('vnv_user', JSON.stringify(updatedUser));
       }
     });
 
@@ -325,7 +327,8 @@ const App: React.FC = () => {
       if (user) {
         const me = updatedUsers.find(u => u.id === user.id);
         if (me) {
-          setUser(prev => (prev?.isAdmin && !me.isAdmin) ? { ...me, isAdmin: true } : me);
+          setUser(me);
+          localStorage.setItem('vnv_user', JSON.stringify(me));
         }
       }
     });
@@ -767,7 +770,8 @@ const App: React.FC = () => {
         if (user && data.users) {
           const me = data.users.find((u: any) => u.id === user.id);
           if (me) {
-            setUser(prev => (prev?.isAdmin && !me.isAdmin) ? { ...me, isAdmin: true } : me);
+            setUser(me);
+            localStorage.setItem('vnv_user', JSON.stringify(me));
           }
         }
       }
@@ -1321,9 +1325,7 @@ const App: React.FC = () => {
 
         // Update local state ONLY after successful sync for Admin
         setRegisteredUsers(newUsers);
-        if (user?.id === userId) {
-          setUser(prev => (prev?.isAdmin && !updatedUser.isAdmin) ? { ...updatedUser, isAdmin: true } : updatedUser);
-        }
+        if (user?.id === userId) setUser(updatedUser);
         if (upgradeFee > 0) {
           setSystemBudget(newBudget);
           setRankProfit(newRankProfit);
