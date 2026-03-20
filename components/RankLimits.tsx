@@ -39,6 +39,7 @@ const RankLimits: React.FC<RankLimitsProps> = ({ user, isGlobalProcessing, onBac
   const [selectedRank, setSelectedRank] = useState<any>(null);
   const [billImage, setBillImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [copyToast, setCopyToast] = useState(false);
@@ -103,6 +104,7 @@ const RankLimits: React.FC<RankLimitsProps> = ({ user, isGlobalProcessing, onBac
     setView(RankView.LIST); // Need this for animation
     setTimeout(() => setView(RankView.PAYMENT), 50);
     setBillImage(null);
+    setQrLoading(true);
   };
 
   const copyToClipboard = (text: string) => {
@@ -241,7 +243,19 @@ const RankLimits: React.FC<RankLimitsProps> = ({ user, isGlobalProcessing, onBac
                 </div>
                 
                 <div className="w-48 h-48 bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 p-3 shadow-inner relative group">
-                  <img src={qrUrl} alt="VietQR" className="w-full h-full object-contain" />
+                  <img 
+                    src={qrUrl} 
+                    alt="VietQR" 
+                    className={`w-full h-full object-contain transition-opacity duration-300 ${qrLoading ? 'opacity-0' : 'opacity-100'}`} 
+                    onLoad={() => setQrLoading(false)}
+                    onError={() => setQrLoading(false)}
+                  />
+                  {qrLoading && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/80 backdrop-blur-sm animate-in fade-in duration-200">
+                      <div className="w-8 h-8 border-4 border-[#ff8c00] border-t-transparent rounded-full animate-spin mb-2"></div>
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Đang cập nhật...</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black/5 opacity-0 group-active:opacity-100 transition-opacity pointer-events-none"></div>
                 </div>
                 

@@ -36,7 +36,9 @@ import {
   Copy,
   Check,
   Maximize2,
-  Download
+  Download,
+  MessageSquare,
+  ExternalLink
 } from 'lucide-react';
 import ContractModal from './ContractModal';
 
@@ -477,8 +479,55 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                         <div className="space-y-0.5"><div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Hạng</p></div><p className="text-xs font-black text-[#ff8c00] uppercase">{getRankName(u.rank)}</p></div>
                         <div className="space-y-0.5"><div className="flex items-center gap-1.5"><TrendingUp size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Hạn mức</p></div><p className="text-xs font-black text-white">{(u.totalLimit || 0).toLocaleString()} đ</p></div>
                         <div className="space-y-0.5"><div className="flex items-center gap-1.5"><Hash size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">CCCD</p></div><p className="text-xs font-black text-white">{u.idNumber}</p></div>
-                        <div className="space-y-0.5"><div className="flex items-center gap-1.5"><Phone size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Zalo</p></div><p className="text-xs font-black text-white">{u.phone}</p></div>
-                        <div className="space-y-0.5"><div className="flex items-center gap-1.5"><Users size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Tham chiếu</p></div><p className="text-xs font-black text-white truncate">{u.refZalo || 'CHƯA CẬP NHẬT'}</p></div>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <Phone size={12} className="text-[#ff8c00]" />
+                            <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Zalo / SĐT</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs font-black text-white">{u.phone}</p>
+                            <div className="flex gap-1">
+                              <button 
+                                onClick={() => handleCopy(u.phone, 'phone' + u.id)}
+                                className={`p-1 rounded-md transition-all ${copiedId === 'phone' + u.id ? 'bg-green-500/20 text-green-500' : 'bg-white/5 text-gray-500 hover:text-white'}`}
+                                title="Sao chép số điện thoại"
+                              >
+                                {copiedId === 'phone' + u.id ? <Check size={10} /> : <Copy size={10} />}
+                              </button>
+                              <a 
+                                href={`https://zalo.me/${u.phone.replace(/\D/g, '')}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="p-1 bg-blue-500/10 text-blue-500 rounded-md hover:bg-blue-500/20 transition-all flex items-center gap-1"
+                                title="Kiểm tra Zalo"
+                              >
+                                <MessageSquare size={10} />
+                                <span className="text-[7px] font-black uppercase">Check</span>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <Users size={12} className="text-[#ff8c00]" />
+                            <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Tham chiếu</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs font-black text-white truncate">{u.refZalo || 'CHƯA CẬP NHẬT'}</p>
+                            {u.refZalo && (
+                              <a 
+                                href={`https://zalo.me/${u.refZalo.replace(/\D/g, '')}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="p-1 bg-blue-500/10 text-blue-500 rounded-md hover:bg-blue-500/20 transition-all flex items-center gap-1"
+                                title="Kiểm tra Zalo Tham chiếu"
+                              >
+                                <MessageSquare size={10} />
+                                <span className="text-[7px] font-black uppercase">Check</span>
+                              </a>
+                            )}
+                          </div>
+                        </div>
                         <div className="space-y-0.5"><div className="flex items-center gap-1.5"><MapPin size={12} className="text-[#ff8c00]" /><p className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Địa chỉ</p></div><p className="text-[11px] font-black text-white leading-tight line-clamp-2">{u.address || 'CHƯA CẬP NHẬT'}</p></div>
                       </div>
 
@@ -636,12 +685,25 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                           <span className="text-[6px] font-black text-gray-600 uppercase">Số tài khoản:</span>
                                           <div className="flex items-center gap-1.5">
                                             <span className="text-[10px] font-black text-blue-400 tracking-widest">{u.bankAccountNumber}</span>
-                                            <button 
-                                              onClick={() => handleCopy(u.bankAccountNumber || '', u.id + loan.id)}
-                                              className={`p-1 rounded-md transition-all ${copiedId === u.id + loan.id ? 'bg-green-500/20 text-green-500' : 'bg-white/5 text-gray-500 hover:text-white'}`}
-                                            >
-                                              {copiedId === u.id + loan.id ? <Check size={9} /> : <Copy size={9} />}
-                                            </button>
+                                            <div className="flex gap-1">
+                                              <button 
+                                                onClick={() => handleCopy(u.bankAccountNumber || '', u.id + loan.id)}
+                                                className={`p-1 rounded-md transition-all ${copiedId === u.id + loan.id ? 'bg-green-500/20 text-green-500' : 'bg-white/5 text-gray-500 hover:text-white'}`}
+                                                title="Sao chép số tài khoản"
+                                              >
+                                                {copiedId === u.id + loan.id ? <Check size={9} /> : <Copy size={9} />}
+                                              </button>
+                                              <a 
+                                                href={`https://www.google.com/search?q=${encodeURIComponent(`${u.bankName} ${u.bankAccountNumber} lừa đảo`)}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="p-1 bg-red-500/10 text-red-500 rounded-md hover:bg-red-500/20 transition-all flex items-center gap-1"
+                                                title="Kiểm tra nợ xấu/lừa đảo"
+                                              >
+                                                <Search size={9} />
+                                                <span className="text-[7px] font-black uppercase">Check</span>
+                                              </a>
+                                            </div>
                                           </div>
                                         </div>
                                         <div className="flex justify-between items-center">

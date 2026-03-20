@@ -194,6 +194,7 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
     if (initialLoanToSettle) {
       setSettleLoan(initialLoanToSettle);
       setStep(LoanStep.SETTLE_DETAIL);
+      setQrLoading(true);
     } else if (initialLoanToView) {
       setSelectedContract(initialLoanToView);
       setStep(LoanStep.LIST);
@@ -204,6 +205,7 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
     }
   }, [initialLoanToSettle, initialLoanToView]);
   const [isUploading, setIsUploading] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [copyToast, setCopyToast] = useState(false);
 
@@ -567,6 +569,7 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                              onClick={() => {
                                setSettleLoan(item);
                                setStep(LoanStep.SETTLE_DETAIL);
+                               setQrLoading(true);
                              }}
                              className="bg-white text-black font-black px-2.5 py-1.5 rounded-lg text-[7px] uppercase tracking-widest active:scale-95 transition-all"
                            >
@@ -739,7 +742,12 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
         {/* Settlement Type Selection */}
         <div className="flex gap-2 mb-2 flex-none">
           <button 
-            onClick={() => setSettleType('ALL')}
+            onClick={() => {
+              if (settleType !== 'ALL') {
+                setSettleType('ALL');
+                setQrLoading(true);
+              }
+            }}
             className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border ${
               settleType === 'ALL' 
                 ? 'bg-[#ff8c00] text-black border-[#ff8c00] shadow-lg shadow-orange-500/20' 
@@ -750,7 +758,12 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
           </button>
           <button 
             disabled={!canSettlePrincipal}
-            onClick={() => setSettleType('PRINCIPAL')}
+            onClick={() => {
+              if (settleType !== 'PRINCIPAL') {
+                setSettleType('PRINCIPAL');
+                setQrLoading(true);
+              }
+            }}
             className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border ${
               settleType === 'PRINCIPAL' 
                 ? 'bg-[#ff8c00] text-black border-[#ff8c00] shadow-lg shadow-orange-500/20' 
@@ -822,7 +835,19 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                 </div>
                 
                 <div className="w-48 h-48 bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 p-3 shadow-inner relative group">
-                  <img src={qrUrl} alt="VietQR" className="w-full h-full object-contain" />
+                  <img 
+                    src={qrUrl} 
+                    alt="VietQR" 
+                    className={`w-full h-full object-contain transition-opacity duration-300 ${qrLoading ? 'opacity-0' : 'opacity-100'}`} 
+                    onLoad={() => setQrLoading(false)}
+                    onError={() => setQrLoading(false)}
+                  />
+                  {qrLoading && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/80 backdrop-blur-sm animate-in fade-in duration-200">
+                      <div className="w-8 h-8 border-4 border-[#ff8c00] border-t-transparent rounded-full animate-spin mb-2"></div>
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Đang cập nhật...</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black/5 opacity-0 group-active:opacity-100 transition-opacity pointer-events-none"></div>
                 </div>
                 
