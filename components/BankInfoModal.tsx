@@ -63,12 +63,8 @@ const BankInfoModal: React.FC<BankInfoModalProps> = ({ user, onClose, onUpdate }
     const normalizedUserFullName = normalizeName(user?.fullName || "");
     const normalizedAccountHolder = normalizeName(bankAccountHolder);
 
-    if (normalizedAccountHolder !== normalizedUserFullName) {
-      // Tooltip will show the error, but we also keep alert as a fallback
-      return;
-    }
-
-    setShowConfirm(true);
+    onUpdate({ bankName, bankAccountNumber, bankAccountHolder });
+    onClose();
   };
 
   const confirmSave = () => {
@@ -199,36 +195,7 @@ const BankInfoModal: React.FC<BankInfoModalProps> = ({ user, onClose, onUpdate }
         </div>
       </div>
 
-      {/* Confirmation Popup */}
-      {showConfirm && (
-        <div className="fixed inset-0 z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-300">
-          <div className="bg-[#1a1a1a] w-full max-w-xs rounded-[2.5rem] p-8 space-y-6 border border-white/10 shadow-2xl text-center">
-            <div className="w-16 h-16 bg-orange-500/10 rounded-full flex items-center justify-center text-[#ff8c00] mx-auto">
-              <AlertCircle size={32} />
-            </div>
-            <div className="space-y-2">
-              <h4 className="text-lg font-black text-white uppercase tracking-tighter">Xác nhận thông tin</h4>
-              <p className="text-[10px] font-bold text-gray-500 leading-relaxed">
-                Vui lòng kiểm tra kỹ số tài khoản và tên ngân hàng. Thông tin sai lệch sẽ ảnh hưởng đến việc nhận tiền giải ngân.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <button 
-                onClick={confirmSave}
-                className="w-full py-4 bg-[#ff8c00] text-black font-black text-[10px] uppercase tracking-widest rounded-2xl active:scale-95 transition-all"
-              >
-                Tôi đã kiểm tra kỹ
-              </button>
-              <button 
-                onClick={() => setShowConfirm(false)}
-                className="w-full py-4 bg-white/5 text-gray-500 font-black text-[10px] uppercase tracking-widest rounded-2xl active:scale-95 transition-all"
-              >
-                Quay lại sửa
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };

@@ -693,16 +693,6 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                               >
                                                 {copiedId === u.id + loan.id ? <Check size={9} /> : <Copy size={9} />}
                                               </button>
-                                              <a 
-                                                href={`https://www.google.com/search?q=${encodeURIComponent(`${u.bankName} ${u.bankAccountNumber} lừa đảo`)}`} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="p-1 bg-red-500/10 text-red-500 rounded-md hover:bg-red-500/20 transition-all flex items-center gap-1"
-                                                title="Kiểm tra nợ xấu/lừa đảo"
-                                              >
-                                                <Search size={9} />
-                                                <span className="text-[7px] font-black uppercase">Check</span>
-                                              </a>
                                             </div>
                                           </div>
                                         </div>
